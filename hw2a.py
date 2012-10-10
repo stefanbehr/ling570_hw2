@@ -37,14 +37,8 @@ if __name__ == "__main__":
                 tags.append(EBOS_TAG)
 
     token_tag_frequencies = get_frequencies('/'.join(pair) for pair in corpus)
-    tag_bigrams = get_tag_bigrams(tags)
-    tag_bigram_frequencies = get_frequencies(' '.join(bigram) for bigram in tag_bigrams)
-    tag_unigram_frequencies = get_frequencies(tags)
-
-    top_tags = 0
 
     try:
-        print_top_n(token_tag_frequencies, 30)
-        print_top_n(tag_bigram_frequencies, 20)
+        print_top_n(token_tag_frequencies, 20)
     except IOError:
         sys.exit(0)
