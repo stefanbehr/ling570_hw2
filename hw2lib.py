@@ -42,7 +42,7 @@ def print_top_n(frequencies, n):
     """Given a dictionary of item keys and frequency values, prints \
 the n most frequent items with their frequencies, tab-separated."""
     top_n = get_top_n(frequencies, n)
-    col_width = longest_string([str(item) for item, freq in top_n])
+    col_width = max_str_len([str(item) for item, freq in top_n])
     print '\n'.join("{0:{1:d}s}\t{2:d}".format(item, col_width, freq) for item, freq in top_n)
 
 def sorted_by_val_and_key(d, key_reverse=False, val_reverse=False):
@@ -58,6 +58,9 @@ then by keys."""
             result.append((key, val))
     return result
 
-def longest_string(alos):
+def max_str_len(alos):
     """Given a lost strings, finds the length of the longest one."""
     return max(map(len, alos))
+
+EBOS_TAG = '<s>' # end/beginning of sentence tag
+EOS_PUNC = '.' # tag associated with sentence-terminal punctuation

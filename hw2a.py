@@ -1,9 +1,8 @@
 #!/usr/bin/env python2.7
-# hw2lib module
 
 # Stefan Behr
 # LING 570
-# Homework 2
+# Homework 2, part a
 # 10/08/2012
 
 if __name__ == "__main__":
@@ -14,27 +13,15 @@ if __name__ == "__main__":
 
     from hw2lib import *
 
-    EBOS_TAG = '<s>' # end/beginning of sentence tag
-    EOS_PUNC = '.' # tag associated with sentence-terminal punctuation
-
     try:
-        corpus_dir = path.sys.argv[1]
+        corpus_dir = path.expanduser(path.sys.argv[1])
     except IndexError:
         sys.exit("Missing input directory argument.")
 
     corpus = []
-    tags = []
-    tags.append(EBOS_TAG)
-
-    corpus_dir = path.expanduser(corpus_dir)
 
     for pathname in glob(path.join(corpus_dir, '*')):
-        for pair in get_token_tag_pairs(get_file_data(pathname)):
-            tag = pair[1]
-            corpus.append(pair)
-            tags.append(tag)
-            if tag == EOS_PUNC:
-                tags.append(EBOS_TAG)
+        corpus.extend(get_token_tag_pairs(get_file_data(pathname)))
 
     token_tag_frequencies = get_frequencies('/'.join(pair) for pair in corpus)
 
