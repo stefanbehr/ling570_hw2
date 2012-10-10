@@ -1,2 +1,2 @@
 clean:
-	rm -f *.{error,log,out} *~
+	rm -f *~ 
