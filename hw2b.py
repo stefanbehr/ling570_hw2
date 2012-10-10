@@ -42,16 +42,25 @@ if __name__ == "__main__":
     top_ten_tags = [tag for tag, freq in tag_frequencies_top_ten]
     tag_frequencies_top_ten = {tag: freq for tag, freq in tag_frequencies_top_ten}
 
-    t_matrix = {tag: {} for tag in top_ten_tags}
+    t_matrix = []
+    t_matrix.append(['']+top_ten_tags)
     
     for row_tag in top_ten_tags:
+        row = [row_tag]
         for col_tag in top_ten_tags:
             t_prob = float(tag_bigram_frequencies.get(' '.join((row_tag, col_tag)), 0)) / \
                 sum(freq for bigram, freq in tag_bigram_frequencies.items()
                         if row_tag == bigram.split(' ')[0])
             t_prob = '-Inf' if t_prob == 0 else log(t_prob, 2)
-            t_matrix[row_tag][col_tag] = t_prob
+            row.append(t_prob)
+        t_matrix.append(row)
 
     print "\n" + \
         "(2) Produce a Markov transition matrix for the 10 most frequently occurring tags." + \
+        "\n"
+
+    pprint_matrix(t_matrix)
+
+    print "\n" + \
+        "(3) Produce an emission probability matrix for the 20 most frequently occurring types and their associated tags." + \
         "\n"
