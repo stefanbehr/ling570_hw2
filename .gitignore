@@ -1,8 +1,5 @@
 hw2.pdf
-output.txt
-test_data
 *.error
 *.log
-*.out
 *.pyc
 *~
