@@ -37,7 +37,6 @@ if __name__ == "__main__":
     tag_bigrams = get_tag_bigrams(tags)
     tag_bigram_frequencies = get_frequencies(' '.join(bigram) for bigram in tag_bigrams)
 
-    print "(1) List the 20 most frequent tag-tag sequences." + "\n"
     print_top(tag_bigram_frequencies, 20)
 
     # part 2b, item 2
@@ -47,7 +46,7 @@ if __name__ == "__main__":
     tagset_descending = [tag for tag, freq in get_top(tag_unigram_frequencies)]
 
     t_matrix = []
-    t_matrix.append(['*'] + tagset_descending)
+    t_matrix.append([''] + tagset_descending)
     
     for row_tag in tagset_descending:
         row = [row_tag]
@@ -60,10 +59,7 @@ if __name__ == "__main__":
             row.append(t_prob)
         t_matrix.append(row)
 
-    print "\n" + \
-        "(2) Produce a Markov transition matrix for the 10 most frequently occurring tags." + \
-        "\n"
-
+    print
     pprint_matrix(t_matrix, rows=11, cols=11) # 11 x 11 matrix due to labels for row/columns
 
     # part 2b, item 3
@@ -76,7 +72,7 @@ if __name__ == "__main__":
     del tag_unigram_frequencies[EBOS_TAG]
 
     e_matrix = []
-    e_matrix.append(['*'] + tagset_alphabeta)
+    e_matrix.append([''] + tagset_alphabeta)
 
     for typ in typeset_descending:
         row = [typ]
@@ -88,8 +84,5 @@ if __name__ == "__main__":
             row.append(e_prob)
         e_matrix.append(row)
 
-    print "\n" + \
-        "(3) Produce an emission probability matrix for the 20 most frequently occurring types and their associated tags." + \
-        "\n"
-
-    pprint_matrix(e_matrix, rows=11, cols=11) # 11 x 11 matrix due to labels for rows/columns
+    print
+    pprint_matrix(e_matrix, rows=21) # 21 x n matrix due to labels for rows/columns
