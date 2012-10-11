@@ -18,7 +18,9 @@ if __name__ == "__main__":
         sys.exit("Missing input directory argument.")
 
     corpus = []
+    typs = []
     tags = []
+
     tags.append(EBOS_TAG)
 
     corpus_dir = path.expanduser(corpus_dir)
@@ -26,6 +28,7 @@ if __name__ == "__main__":
     for pathname in glob(path.join(corpus_dir, '*')):
         for token, tag in get_token_tag_pairs(get_file_data(pathname)):
             corpus.append((token, tag))
+            typs.append(token)
             tags.append(tag)
             if tag == EOS_PUNC:
                 tags.append(EBOS_TAG)
@@ -33,24 +36,26 @@ if __name__ == "__main__":
     # part 2b, item 1
     tag_bigrams = get_tag_bigrams(tags)
     tag_bigram_frequencies = get_frequencies(' '.join(bigram) for bigram in tag_bigrams)
+
     print "(1) List the 20 most frequent tag-tag sequences." + "\n"
-    print_top_n(tag_bigram_frequencies, 20)
+    print_top(tag_bigram_frequencies, 20)
 
     # part 2b, item 2
-    tag_frequencies = get_frequencies(tags)
-    tag_frequencies_top_ten = get_top_n(tag_frequencies, 10)
-    top_ten_tags = [tag for tag, freq in tag_frequencies_top_ten]
-    tag_frequencies_top_ten = {tag: freq for tag, freq in tag_frequencies_top_ten}
+    
+    # list, ordered in descending order of frequency
+    tag_unigram_frequencies = get_frequencies(tags)
+    tagset_descending = [tag for tag, freq in get_top(tag_unigram_frequencies)]
 
     t_matrix = []
-    t_matrix.append(['']+top_ten_tags)
+    t_matrix.append(['*'] + tagset_descending)
     
-    for row_tag in top_ten_tags:
+    for row_tag in tagset_descending:
         row = [row_tag]
-        for col_tag in top_ten_tags:
-            t_prob = float(tag_bigram_frequencies.get(' '.join((row_tag, col_tag)), 0)) / \
-                sum(freq for bigram, freq in tag_bigram_frequencies.items()
-                        if row_tag == bigram.split(' ')[0])
+        row_tag_bigram_total = sum(freq for bigram, freq in tag_bigram_frequencies.items()
+                                   if row_tag == bigram.split(' ')[0])
+        for col_tag in tagset_descending:
+            row_col_bigram_total = tag_bigram_frequencies.get(' '.join((row_tag, col_tag)), 0)
+            t_prob = float(row_col_bigram_total)/row_tag_bigram_total
             t_prob = '-Inf' if t_prob == 0 else log(t_prob, 2)
             row.append(t_prob)
         t_matrix.append(row)
@@ -59,8 +64,32 @@ if __name__ == "__main__":
         "(2) Produce a Markov transition matrix for the 10 most frequently occurring tags." + \
         "\n"
 
-    pprint_matrix(t_matrix)
+    pprint_matrix(t_matrix, rows=11, cols=11) # 11 x 11 matrix due to labels for row/columns
+
+    # part 2b, item 3
+    tagset_alphabeta = sorted(tag for tag in tagset_descending if tag is not EBOS_TAG)
+    typeset_descending = [typ for typ, freq in get_top(get_frequencies(typs))]
+    type_tag_frequencies = get_frequencies(corpus)
+
+    # we don't want the '<s>' tag in our emission matrix, since it
+    # has no corresponding type
+    del tag_unigram_frequencies[EBOS_TAG]
+
+    e_matrix = []
+    e_matrix.append(['*'] + tagset_alphabeta)
+
+    for typ in typeset_descending:
+        row = [typ]
+        for tag in tagset_alphabeta:
+            type_tag_frequency = type_tag_frequencies.get((typ, tag), 0)
+            tag_frequency = tag_unigram_frequencies[tag]
+            e_prob = float(type_tag_frequency)/tag_frequency
+            e_prob = "-Inf" if e_prob == 0 else log(e_prob, 2)
+            row.append(e_prob)
+        e_matrix.append(row)
 
     print "\n" + \
         "(3) Produce an emission probability matrix for the 20 most frequently occurring types and their associated tags." + \
         "\n"
+
+    pprint_matrix(e_matrix, rows=11, cols=11) # 11 x 11 matrix due to labels for rows/columns

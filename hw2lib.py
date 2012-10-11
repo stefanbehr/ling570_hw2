@@ -33,15 +33,18 @@ a frequency list of those items."""
         result[item] = result.get(item, 0) + 1
     return result
 
-def get_top_n(frequencies, n):
+def get_top(frequencies, n=0):
     """Given a dictionary with items as keys and frequencies as values, 
 return the top n item-frequency pairs."""
-    return sorted_by_val_and_key(frequencies, val_reverse=True)[:n]
+    result = sorted_by_val_and_key(frequencies, val_reverse=True)
+    if n:
+        result = result[:n]
+    return result
 
-def print_top_n(frequencies, n):
+def print_top(frequencies, n=0):
     """Given a dictionary of item keys and frequency values, prints 
 the n most frequent items with their frequencies, tab-separated."""
-    top_n = get_top_n(frequencies, n)
+    top_n = get_top(frequencies, n)
     col_width = max_str_len([str(item) for item, freq in top_n])
     print '\n'.join("{0:{1:d}s}\t{2:d}".format(item, col_width, freq) for item, freq in top_n)
 
@@ -62,14 +65,23 @@ def max_str_len(alos):
     """Given a lost strings, finds the length of the longest one."""
     return max(map(len, alos))
 
-def pprint_matrix(matrix):
+def pprint_matrix(matrix, rows=0, cols=0):
     """Pretty print a matrix, passed to the function in the following form:
 
     [['', col1_label, ..., colm_label],
      [row1_label, cell_11, cell_12, ..., cell_1m],
      ...
-     [rown_label, cell_n1, cell_n2, ..., cell_nm]]"""
+     [rown_label, cell_n1, cell_n2, ..., cell_nm]]
+
+     Print only the first <rows> rows and <cols> cols either is > 0,
+     otherwise print the whole matrix.
+
+     """
     import types
+    if rows: #truncate rows
+        matrix = matrix[:rows]
+    if cols: #truncate columns
+        matrix = [row[:cols] for row in matrix]
     matrix = [map((lambda cell: "{:.6f}".format(cell)
                    if type(cell) == types.FloatType else str(cell)), row)
               for row in matrix]

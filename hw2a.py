@@ -26,6 +26,6 @@ if __name__ == "__main__":
     token_tag_frequencies = get_frequencies('/'.join(pair) for pair in corpus)
 
     try:
-        print_top_n(token_tag_frequencies, 20)
+        print_top(token_tag_frequencies, 20)
     except IOError:
         sys.exit(0)
