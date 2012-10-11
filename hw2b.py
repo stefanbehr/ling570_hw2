@@ -86,3 +86,6 @@ if __name__ == "__main__":
 
     print
     pprint_matrix(e_matrix, rows=21) # 21 x n matrix due to labels for rows/columns
+
+    with open('test.out', 'w') as t_out:
+        t_out.write('\n'.join(str(pair)for pair in tag_unigram_frequencies.items())+'\n'+'\n'.join(str(pair) for pair in tag_bigram_frequencies.items())+'\n'+'\n'.join(str(pair) for pair in type_tag_frequencies.items()))
