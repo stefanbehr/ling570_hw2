@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     corpus_dir = path.expanduser(corpus_dir)
 
-    for pathname in glob(path.join(corpus_dir, '*')):
+    for pathname in sorted(glob(path.join(corpus_dir, '*'))):
         for token, tag in get_token_tag_pairs(get_file_data(pathname)):
             corpus.append((token, tag))
             typs.append(token)
